@@ -8,17 +8,17 @@ fun main() {
     }
 }
 
-fun go(n: Int): Result {
-    if (n <= 0) return Result(emptyArray())
+
+fun go(n: Int): ResultObject {
+    if (n <= 0) return ResultObject(emptyArray())
     val arrays = mutableMapOf<Int, Array<Int>>()
     for (i in 1..n) {
-        val size = Random.nextInt(0, 100)
-        val arr = Array(size) { Random.nextInt(0, 10_000) }
+        val size = Random.nextInt(0, 100 + n)
+        if (arrays[size] != null) return go(n)
+        val arr = Array(size) { Random.nextInt(0, 100_000) }.apply { if (size % 2 == 0) sort() else sortDescending() }
         arrays[size] = arr
     }
-    val even = arrays.filter { it.key % 2 == 0 }.values.map { it.sortedArray() }.toTypedArray()
-    val notEven = arrays.filter { it.key % 2 != 0 }.values.map { it.sortedArrayDescending() }.toTypedArray()
-    return Result(arrayOf(*even, *notEven))
+    return ResultObject(arrays.values.toTypedArray())
 }
 
-class Result(val arrays: Array<Array<Int>>)
+class ResultObject(val arrays: Array<Array<Int>>)
